@@ -7,7 +7,7 @@ var weatherSection = document.getElementById("weatherSection")
 var fiveDayForecast = document.getElementById("fiveDayForecast")
 function saveCity() {
     var input = searchInput.value
-    saveSearch(input)
+    saveSearchFunc(input)
     console.log(input)
     var APIurl = "https://api.openweathermap.org/data/2.5/weather?q=" + input + "&appid=" + APIkey
     fetch(APIurl).then(function (res) {
@@ -18,49 +18,56 @@ function saveCity() {
             return res.json()
         }).then(function (data) {
             console.log(data)
-         fillWeatherDashboard(data)  
-fillFiveDayForecast(data)
+            fillWeatherDashboard(data)
+            fillFiveDayForecast(data)
         })
     })
 }
-function saveSearch(data){
-var searches = localStorage.getItem("searches")||[]
-searches.push(data)
+function saveSearchFunc(data) {
+    var searches = JSON.parse(localStorage.getItem("searches")) || []
+    searches.push(data)
+    localStorage.setItem("searches", JSON.stringify(searches))
 }
-function fillFiveDayForecast(data){
-    for(let i=1;i<6;i++){
-var day = data.daily[i]
-var temp = document.createElement("p")
-    temp.textContent = "Temp: " + day.temp.day + "*F"
-    fiveDayForecast.appendChild(temp)
-    var wind = document.createElement("p")
-    wind.textContent = "Wind: " + day.wind_speed+ "MPH"
-    fiveDayForecast.appendChild(wind)
-    var humidity = document.createElement("p")
-    humidity.textContent = "Humidity: " + day.humidity + "%"
-    fiveDayForecast.appendChild(humidity)
+function fillFiveDayForecast(data) {
+    for (let i = 1; i < 6; i++) {
+        var day = data.daily[i]
+        var card = document.createElement("div")
+        card.classList.add("col-2")
+        var temp = document.createElement("p")
+        temp.textContent = "Temp: " + day.temp.day + "*F"
+        card.appendChild(temp)
+        var wind = document.createElement("p")
+        wind.textContent = "Wind: " + day.wind_speed + "MPH"
+        card.appendChild(wind)
+        var humidity = document.createElement("p")
+        humidity.textContent = "Humidity: " + day.humidity + "%"
+        card.appendChild(humidity)
+        fiveDayForecast.appendChild(card)
     }
 }
-function fillWeatherDashboard(data){
+function fillWeatherDashboard(data) {
+    var card = document.createElement("div")
+        card.classList.add("col-2", "card")
     var temp = document.createElement("p")
     temp.textContent = "Temp: " + data.current.temp + "*F"
-    weatherSection.appendChild(temp)
+    card.appendChild(temp)
     var wind = document.createElement("p")
-    wind.textContent = "Wind: " + data.current.wind + "MPH"
-    weatherSection.appendChild(wind)
+    wind.textContent = "Wind: " + data.current.wind_speed + "MPH"
+    card.appendChild(wind)
     var humidity = document.createElement("p")
     humidity.textContent = "Humidity: " + data.current.humidity + "%"
-    weatherSection.appendChild(humidity)
+    card.appendChild(humidity)
     var uvi = document.createElement("p")
-    uvi.textContent = "UV Index: " + data.current.uvi 
-    if(data.current.uvi<3){
+    uvi.textContent = "UV Index: " + data.current.uvi
+    if (data.current.uvi < 3) {
         uvi.classList.add("bg-success")
-    }else if(data.current.uvi<6){
+    } else if (data.current.uvi < 6) {
         uvi.classList.add("bg-warning")
-    }else{
+    } else {
         uvi.classList.add("bg-danger")
     }
-    weatherSection.appendChild(uvi)
+    card.appendChild(uvi)
+    weatherSection.appendChild(card)
 }
 const searchBTN = document.getElementById("searchBTN")
 searchBTN.addEventListener("click", saveCity)
