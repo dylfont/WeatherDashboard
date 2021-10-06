@@ -9,19 +9,23 @@ function saveCity() {
     var input = searchInput.value
     saveSearchFunc(input)
     console.log(input)
-    var APIurl = "https://api.openweathermap.org/data/2.5/weather?q=" + input + "&appid=" + APIkey
-    fetch(APIurl).then(function (res) {
+   findCityData(input)
+}
+function findCityData(input) {
+
+var APIurl = "https://api.openweathermap.org/data/2.5/weather?q=" + input + "&appid=" + APIkey
+fetch(APIurl).then(function (res) {
+    return res.json()
+}).then(function (data) {
+    var APIurl2 = "https://api.openweathermap.org/data/2.5/onecall?lat=" + data.coord.lat + "&lon=" + data.coord.lon + "&units=imperial&appid=" + APIkey
+    fetch(APIurl2).then(function (res) {
         return res.json()
     }).then(function (data) {
-        var APIurl2 = "https://api.openweathermap.org/data/2.5/onecall?lat=" + data.coord.lat + "&lon=" + data.coord.lon + "&units=imperial&appid=" + APIkey
-        fetch(APIurl2).then(function (res) {
-            return res.json()
-        }).then(function (data) {
-            console.log(data)
-            fillWeatherDashboard(data)
-            fillFiveDayForecast(data)
-        })
+        console.log(data)
+        fillWeatherDashboard(data)
+        fillFiveDayForecast(data)
     })
+})
 }
 function saveSearchFunc(data) {
     var searches = JSON.parse(localStorage.getItem("searches")) || []
@@ -32,7 +36,7 @@ function fillFiveDayForecast(data) {
     for (let i = 1; i < 6; i++) {
         var day = data.daily[i]
         var card = document.createElement("div")
-        card.classList.add("col-2")
+        card.classList.add("col-2", "card")
         var temp = document.createElement("p")
         temp.textContent = "Temp: " + day.temp.day + "*F"
         card.appendChild(temp)
@@ -47,7 +51,7 @@ function fillFiveDayForecast(data) {
 }
 function fillWeatherDashboard(data) {
     var card = document.createElement("div")
-        card.classList.add("col-2", "card")
+    card.classList.add("col-12", "card")
     var temp = document.createElement("p")
     temp.textContent = "Temp: " + data.current.temp + "*F"
     card.appendChild(temp)
@@ -69,5 +73,20 @@ function fillWeatherDashboard(data) {
     card.appendChild(uvi)
     weatherSection.appendChild(card)
 }
+function fillSearchResults(data) {
+    var searches = JSON.parse(localStorage.getItem("searches")) || []
+for (let i = 0; i < searches.length; i++) {
+    var button = document.createElement("button")
+    button.textContent = searches [i]
+    button.addEventListener("click", function(event){
+        findCityData(event.target.textContent)
+    })
+    var savedSearches=document.getElementById("savedSearches")
+    savedSearches.appendChild(button)
+    
+}
+    
+}
+fillSearchResults()
 const searchBTN = document.getElementById("searchBTN")
 searchBTN.addEventListener("click", saveCity)

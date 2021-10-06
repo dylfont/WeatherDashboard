@@ -14,21 +14,25 @@
 </head>
 
 <body>
+    <div class="row">
+        <div class="col-4">
+            <div id="searchSection">
 
-
-    <div id="searchSection">
-
-        <h1>
-            Search
-        </h1>
-        <input id="searchInput">
-        <button id="searchBTN">
-            Save
-        </button>
+                <h1>
+                    Search
+                </h1>
+                <input id="searchInput">
+                <button id="searchBTN">
+                    Save
+                </button>
+            </div>
+            <div class="row" id="savedSearches"></div>
+        </div>
+        <div class="col-8">
+            <div class="row" id="weatherSection"></div>
+            <div class="row" id="fiveDayForecast"></div>
+        </div>
     </div>
-    <div class="row"id="savedSearches"></div>
-    <div class="row"id="weatherSection"></div>
-    <div class="row"id="fiveDayForecast"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="script.js"></script>
