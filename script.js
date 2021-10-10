@@ -22,7 +22,7 @@ fetch(APIurl).then(function (res) {
         return res.json()
     }).then(function (data) {
         console.log(data)
-        fillWeatherDashboard(data)
+        fillWeatherDashboard(data,input)
         fillFiveDayForecast(data)
     })
 })
@@ -33,6 +33,7 @@ function saveSearchFunc(data) {
     localStorage.setItem("searches", JSON.stringify(searches))
 }
 function fillFiveDayForecast(data) {
+    fiveDayForecast.innerHTML=""
     for (let i = 1; i < 6; i++) {
         var day = data.daily[i]
         var card = document.createElement("div")
@@ -49,9 +50,14 @@ function fillFiveDayForecast(data) {
         fiveDayForecast.appendChild(card)
     }
 }
-function fillWeatherDashboard(data) {
+function fillWeatherDashboard(data,cityname) {
+    weatherSection.innerHTML=""
     var card = document.createElement("div")
     card.classList.add("col-12", "card")
+    var name = document.createElement("h3")
+    name.classList.add("card-title")
+    name.textContent = cityname
+    card.appendChild(name)
     var temp = document.createElement("p")
     temp.textContent = "Temp: " + data.current.temp + "*F"
     card.appendChild(temp)
